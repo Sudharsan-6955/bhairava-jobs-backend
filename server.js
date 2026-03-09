@@ -42,7 +42,12 @@ if (process.env.NODE_ENV === 'production') {
 // double slashes. It operates on `req.url` which excludes the host/protocol.
 app.use((req, res, next) => {
   if (typeof req.url === 'string' && req.url.includes('//')) {
-    req.url = req.url.replace(/\/\/{2,}/g, '/');
+    const normalized = req.url.replace(/\/\/{2,}/g, '/');
+    req.url = normalized;
+    // Express sets originalUrl for mounted routers; normalize it as well if present
+    if (typeof req.originalUrl === 'string') {
+      req.originalUrl = req.originalUrl.replace(/\/\/{2,}/g, '/');
+    }
   }
   next();
 });

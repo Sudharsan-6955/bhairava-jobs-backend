@@ -37,6 +37,16 @@ if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
 }
 
+// Normalize duplicate slashes in request paths (e.g. //jobs -> /jobs)
+// This is safe and prevents accidental 404s when clients produce URLs with
+// double slashes. It operates on `req.url` which excludes the host/protocol.
+app.use((req, res, next) => {
+  if (typeof req.url === 'string' && req.url.includes('//')) {
+    req.url = req.url.replace(/\/\/{2,}/g, '/');
+  }
+  next();
+});
+
 /**
  * ====================
  * Security Middleware

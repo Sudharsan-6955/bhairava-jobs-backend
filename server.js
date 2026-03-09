@@ -78,6 +78,9 @@ const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:3000')
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+// Log configured client origins for easier deployment troubleshooting
+console.log('🔗 Allowed client origins:', allowedOrigins);
+
 const corsOptions = {
   origin(origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {

@@ -180,7 +180,8 @@ const getAllJobs = asyncHandler(async (req, res) => {
       data: jobs
     });
   } catch (error) {
-    console.error('Error fetching jobs:', error);
+    const logger = require('../utils/logger');
+    logger.error({ err: error }, 'Error fetching jobs');
     return res.status(500).json({
       success: false,
       message: 'Failed to fetch jobs',
@@ -245,7 +246,8 @@ const updateJob = asyncHandler(async (req, res) => {
     try {
       await deleteFromCloudinary(job.cloudinaryId);
     } catch (error) {
-      console.error('Error deleting old image from Cloudinary:', error);
+      const logger = require('../utils/logger');
+      logger.error({ err: error }, 'Error deleting old image from Cloudinary');
     }
   }
 
@@ -299,7 +301,8 @@ const deleteJob = asyncHandler(async (req, res) => {
     try {
       await deleteFromCloudinary(job.cloudinaryId);
     } catch (error) {
-      console.error('Error deleting image from Cloudinary:', error);
+      const logger = require('../utils/logger');
+      logger.error({ err: error }, 'Error deleting image from Cloudinary');
     }
   }
 
@@ -329,7 +332,8 @@ const permanentlyDeleteJob = asyncHandler(async (req, res) => {
     try {
       await deleteFromCloudinary(job.cloudinaryId);
     } catch (error) {
-      console.error('Error deleting image from Cloudinary:', error);
+      const logger = require('../utils/logger');
+      logger.error({ err: error }, 'Error deleting image from Cloudinary');
     }
   }
 

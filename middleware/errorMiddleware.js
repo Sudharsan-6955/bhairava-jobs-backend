@@ -73,14 +73,15 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // Log error for debugging (in production, use proper logging service)
-  console.error('Error:', {
+  const logger = require('../utils/logger');
+  logger.error({
     message: err.message,
     stack: err.stack,
     url: req.originalUrl,
     method: req.method,
     ip: req.ip,
     timestamp: new Date().toISOString()
-  });
+  }, 'Unhandled error');
 
   res.status(statusCode).json(response);
 };

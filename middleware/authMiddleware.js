@@ -87,7 +87,8 @@ const protect = asyncHandler(async (req, res, next) => {
     }
 
   } catch (error) {
-    console.error('Auth middleware error:', error);
+    const logger = require('../utils/logger');
+    logger.error({ err: error }, 'Auth middleware error');
     return res.status(500).json({
       success: false,
       message: 'Authentication failed. Please try again.'

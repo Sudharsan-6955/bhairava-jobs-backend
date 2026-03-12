@@ -130,7 +130,8 @@ const uploadToCloudinaryMiddleware = asyncHandler(async (req, res, next) => {
     }
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(`📤 Uploading image to Cloudinary: ${req.file.originalname}`);
+      const logger = require('../utils/logger');
+      logger.debug({ file: req.file.originalname }, 'Uploading image to Cloudinary');
     }
 
     // Upload to Cloudinary from memory buffer
@@ -140,7 +141,8 @@ const uploadToCloudinaryMiddleware = asyncHandler(async (req, res, next) => {
     );
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(`✅ Image uploaded successfully: ${uploadResult.secure_url}`);
+      const logger = require('../utils/logger');
+      logger.debug({ url: uploadResult.secure_url }, 'Image uploaded to Cloudinary');
     }
 
     // Attach Cloudinary URL to request body
@@ -152,7 +154,8 @@ const uploadToCloudinaryMiddleware = asyncHandler(async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('❌ Cloudinary upload error:', error);
+    const logger = require('../utils/logger');
+    logger.error({ err: error }, 'Cloudinary upload error');
 
     const isAuthError = String(error?.message || '').toLowerCase().includes('api key')
       || String(error?.message || '').toLowerCase().includes('signature')
@@ -203,7 +206,8 @@ const optionalCloudinaryUpload = asyncHandler(async (req, res, next) => {
     
     next();
   } catch (error) {
-    console.error('Cloudinary upload error:', error);
+    const logger = require('../utils/logger');
+    logger.error({ err: error }, 'Cloudinary upload error (optional)');
     return res.status(500).json({
       success: false,
       message: 'Failed to upload image'

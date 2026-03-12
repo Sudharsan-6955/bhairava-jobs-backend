@@ -121,8 +121,9 @@ const sanitizeMiddleware = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('❌ Sanitization error:', error);
-    
+    const logger = require('../utils/logger');
+    logger.error({ err: error }, 'Sanitization error');
+
     // Don't expose internal errors to clients in production
     return res.status(500).json({
       success: false,

@@ -31,7 +31,8 @@ const adminOnly = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Admin middleware error:', error);
+    const logger = require('../utils/logger');
+    logger.error({ err: error }, 'Admin middleware error');
     return res.status(500).json({
       success: false,
       message: 'Authorization check failed'
@@ -61,7 +62,8 @@ const superAdminOnly = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Super admin middleware error:', error);
+    const logger = require('../utils/logger');
+    logger.error({ err: error }, 'Super admin middleware error');
     return res.status(500).json({
       success: false,
       message: 'Authorization check failed'

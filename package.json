@@ -27,6 +27,7 @@
     "express": "^4.18.2",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^8.2.1",
+    "geoip-lite": "^1.4.10",
     "helmet": "^8.1.0",
     "hpp": "^0.2.3",
     "joi": "^17.13.3",
@@ -34,7 +35,10 @@
     "mongoose": "^9.2.3",
     "morgan": "^1.10.1",
     "multer": "^2.1.0",
-    "sanitize-html": "^2.17.1"
+    "request-ip": "^2.2.0",
+    "sanitize-html": "^2.17.1",
+    "ua-parser-js": "^1.0.41",
+    "pino": "^8.14.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

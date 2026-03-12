@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const sanitizeMiddleware = require('./middleware/sanitizeMiddleware');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+const logger = require('./utils/logger');
 
 // Load environment variables
 dotenv.config();
@@ -19,7 +20,7 @@ const requiredEnvVars = ['MONGO_URI', 'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET']
 const missingEnvVars = requiredEnvVars.filter((envName) => !process.env[envName]);
 
 if (missingEnvVars.length > 0) {
-  console.error(`❌ Missing required environment variables: ${missingEnvVars.join(', ')}`);
+  logger.error({ missingEnvVars }, 'Missing required environment variables');
   process.exit(1);
 }
 
@@ -79,7 +80,7 @@ const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:3000')
   .filter(Boolean);
 
 // Log configured client origins for easier deployment troubleshooting
-console.log('🔗 Allowed client origins:', allowedOrigins);
+logger.info({ allowedOrigins }, 'Allowed client origins');
 
 const corsOptions = {
   origin(origin, callback) {
@@ -198,6 +199,10 @@ app.get('/api/health', (req, res) => {
 // Mount routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/jobs', require('./routes/jobRoutes'));
+// Contacts (public submit, admin management)
+app.use('/api/contacts', require('./routes/contactRoutes'));
+// Testimonials (public submit + fetch)
+app.use('/api/testimonials', require('./routes/testimonialRoutes'));
 
 /**
  * ====================
@@ -221,11 +226,7 @@ const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 const server = app.listen(PORT, () => {
-  console.log(`
-    🚀 Server running in ${NODE_ENV.toUpperCase().padEnd(11)} mode      
-    📡 Port: ${PORT.toString().padEnd(37)}
-    🌐 URL: http://localhost:${PORT.toString().padEnd(18)}  
-  `);
+  logger.info({ env: NODE_ENV, port: PORT }, 'Server started');
 });
 
 /**
@@ -236,24 +237,24 @@ const server = app.listen(PORT, () => {
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
-  console.error(`❌ Unhandled Rejection: ${err.message}`);
+  logger.error({ err: err && err.message }, 'Unhandled Rejection');
   // Close server & exit process
   server.close(() => process.exit(1));
 });
 
 // Handle SIGTERM signal
 process.on('SIGTERM', () => {
-  console.log('👋 SIGTERM received. Shutting down gracefully...');
+  logger.info('SIGTERM received. Shutting down gracefully');
   server.close(() => {
-    console.log('✅ Process terminated');
+    logger.info('Process terminated');
   });
 });
 
 // Handle SIGINT signal (Ctrl+C)
 process.on('SIGINT', () => {
-  console.log('\n👋 SIGINT received. Shutting down gracefully...');
+  logger.info('SIGINT received. Shutting down gracefully');
   server.close(() => {
-    console.log('✅ Process terminated');
+    logger.info('Process terminated');
     process.exit(0);
   });
 });

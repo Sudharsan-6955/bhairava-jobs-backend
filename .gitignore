@@ -12,6 +12,8 @@ pnpm-debug.log*
 
 # Environment variables - ignore all local env/secret files
 .env
+.env.*
+!.env.example
 .env.*.local
 .env.local
 .env.development
